@@ -161,9 +161,31 @@ docker compose restart agent            # Docker Compose
 
 ## Connecting your OTel Collector
 
-The agent listens on port `4318` for OTLP/HTTP/JSON. Add this to your Collector config:
+The agent listens on port `4318` for OTLP/HTTP/JSON. The Collector sends logs to it; the agent pattern-matches them and emits events.
+
+The key requirement is that each log source has a `service.name` resource attribute so the agent knows which service a line came from. The right way to set this depends on how you're running your Collector.
+
+### One Collector per host (most common)
+
+A single Collector on a host typically reads from several log files. Use a named `filelog` receiver per service, each stamping its own `service.name`:
 
 ```yaml
+receivers:
+  filelog/postgres:
+    include: [/var/log/postgresql/*.log]
+    resource:
+      service.name: postgres-primary
+
+  filelog/redis:
+    include: [/var/log/redis/*.log]
+    resource:
+      service.name: redis-main
+
+  filelog/kafka:
+    include: [/opt/kafka/logs/server.log]
+    resource:
+      service.name: kafka-broker-1
+
 exporters:
   otlphttp/noctuary:
     endpoint: http://localhost:4318
@@ -174,22 +196,50 @@ exporters:
 
 service:
   pipelines:
+    logs/postgres:
+      receivers: [filelog/postgres]
+      exporters: [otlphttp/noctuary]
+    logs/redis:
+      receivers: [filelog/redis]
+      exporters: [otlphttp/noctuary]
+    logs/kafka:
+      receivers: [filelog/kafka]
+      exporters: [otlphttp/noctuary]
+```
+
+### One Collector per service (sidecar pattern)
+
+If each service has its own Collector, a single `resource` processor with a static value is enough:
+
+```yaml
+receivers:
+  filelog:
+    include: [/var/log/postgresql/*.log]
+
+processors:
+  resource:
+    attributes:
+      - action: insert
+        key: service.name
+        value: postgres-primary
+
+exporters:
+  otlphttp/noctuary:
+    endpoint: http://localhost:4318
+    tls:
+      insecure: true
+    encoding: json
+    compression: none
+
+service:
+  pipelines:
     logs:
       receivers: [filelog]
       processors: [resource]
       exporters: [otlphttp/noctuary]
 ```
 
-Set `service.name` so the agent can attribute events to the right service:
-
-```yaml
-processors:
-  resource:
-    attributes:
-      - action: insert
-        key: service.name
-        value: my-postgres-primary
-```
+> **Note:** `encoding: json` is required. Requires OTel Collector Contrib v0.104.0 or later.
 
 ---
 
