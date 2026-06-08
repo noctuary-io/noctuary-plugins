@@ -30,41 +30,41 @@ Plugins are compiled directly into the agent binary. No runtime config, no sidec
 
 | Plugin | Detects |
 |---|---|
-| **argocd** | Sync operations, health transitions, rollbacks, app deletions |
-| **kubernetes** | Pod restarts, OOMKill, CrashLoopBackOff, node pressure, scale events |
+| [**argocd**](plugins/argocd/) | Sync operations, health transitions, rollbacks, app deletions |
+| [**kubernetes**](plugins/kubernetes/) | Pod restarts, OOMKill, CrashLoopBackOff, node pressure, scale events |
 
 ### Databases
 
 | Plugin | Detects |
 |---|---|
-| **postgres** | Slow queries, autovacuum, connection exhaustion, crash recovery, schema changes |
-| **redis** | Memory eviction, bgsave failure, AOF rewrite errors, replica sync failures, OOM kills |
+| [**postgres**](plugins/postgres/) | Slow queries, autovacuum, connection exhaustion, crash recovery, schema changes |
+| [**redis**](plugins/redis/) | Memory eviction, bgsave failure, AOF rewrite errors, replica sync failures, OOM kills |
 
 ### Message queues
 
 | Plugin | Detects |
 |---|---|
-| **kafka** | Broker elections, under-replicated partitions, consumer lag, ISR changes |
+| [**kafka**](plugins/kafka/) | Broker elections, under-replicated partitions, consumer lag, ISR changes |
 
 ### Feature flags
 
 | Plugin | Detects |
 |---|---|
-| **flagd** | Flag evaluations, configuration reloads, resolver errors |
+| [**flagd**](plugins/flagd/) | Flag evaluations, configuration reloads, resolver errors |
 
 ### Logging frameworks
 
 | Plugin | Vendor |
 |---|---|
-| **pino** | Node.js services using [pino](https://github.com/pinojs/pino) structured JSON logging |
-| **log4j2** | JVM services using [Log4j 2](https://logging.apache.org/log4j/2.x/) |
-| **gojson** | Go services emitting structured JSON (`level`, `msg`, `time`) |
+| [**pino**](plugins/pino/) | Node.js services using [pino](https://github.com/pinojs/pino) structured JSON logging |
+| [**log4j2**](plugins/log4j2/) | JVM services using [Log4j 2](https://logging.apache.org/log4j/2.x/) |
+| [**gojson**](plugins/gojson/) | Go services emitting structured JSON (`level`, `msg`, `time`) |
 
 ### Catch-all
 
 | Plugin | Notes |
 |---|---|
-| **generic** | Keyword heuristics for common error patterns — used when no vendor plugin matches |
+| [**generic**](plugins/generic/) | Keyword heuristics for common error patterns — used when no vendor plugin matches |
 
 ---
 
