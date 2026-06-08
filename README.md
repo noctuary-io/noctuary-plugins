@@ -5,7 +5,7 @@
   <p>
     <a href="https://github.com/noctuary-io/noctuary-plugins/actions"><img alt="Tests" src="https://github.com/noctuary-io/noctuary-plugins/actions/workflows/test.yml/badge.svg" /></a>
     <a href="https://pkg.go.dev/github.com/noctuary-io/noctuary-plugins"><img alt="Go Reference" src="https://pkg.go.dev/badge/github.com/noctuary-io/noctuary-plugins.svg" /></a>
-    <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue" /></a>
+    <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/noctuary-io/noctuary-plugins" /></a>
   </p>
 </div>
 
