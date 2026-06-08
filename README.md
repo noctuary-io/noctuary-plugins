@@ -68,6 +68,18 @@ Plugins are compiled directly into the agent binary. No runtime config, no sidec
 
 ---
 
+## Getting an API key
+
+Sign up at **[app.noctuary.io](https://app.noctuary.io)** and create a free account. Once logged in, go to **Settings → Agent & API Keys** and generate a key. It will look like:
+
+```
+nct_k1_xxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+Keep it handy — you'll pass it to the installer or set it in `agent.yaml`. The agent runs in `stdout` mode without a key (useful for local testing), but you need one to send events to the Noctuary backend.
+
+---
+
 ## Installing the agent
 
 Plugins ship as part of the Noctuary Agent binary. Install the agent and all plugins are included.
