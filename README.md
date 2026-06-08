@@ -86,17 +86,53 @@ Plugins ship as part of the Noctuary Agent binary. Install the agent and all plu
 
 ### Bare metal (Linux)
 
-```bash
-curl -sSL https://install.noctuary.io/agent.sh | sudo bash
-```
-
-With your API key pre-configured:
+Download the binary from the [latest GitHub release](https://github.com/noctuary-io/noctuary-plugins/releases/latest):
 
 ```bash
-NOCTUARY_API_KEY=nct_k1_your_key curl -sSL https://install.noctuary.io/agent.sh | sudo bash
+curl -sSL https://github.com/noctuary-io/noctuary-plugins/releases/latest/download/noctuary-agent-linux-amd64 \
+  -o noctuary-agent
+chmod +x noctuary-agent
+sudo mv noctuary-agent /usr/local/bin/
 ```
 
-The installer places the binary at `/usr/local/bin/noctuary-agent`, writes a default config to `/etc/noctuary/agent.yaml`, and registers a systemd service.
+Create a config directory and write a minimal `agent.yaml`:
+
+```bash
+sudo mkdir -p /etc/noctuary
+sudo tee /etc/noctuary/agent.yaml > /dev/null <<EOF
+auth:
+  api_key: "nct_k1_your_key_here"
+
+upstream:
+  destination: http
+  endpoint: "https://ingest.noctuary.io"
+
+telemetry:
+  otlp:
+    http_listen: ":4318"
+EOF
+```
+
+Register and start a systemd service:
+
+```bash
+sudo tee /etc/systemd/system/noctuary-agent.service > /dev/null <<EOF
+[Unit]
+Description=Noctuary Agent
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/noctuary-agent -config /etc/noctuary/agent.yaml
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now noctuary-agent
+```
 
 ```bash
 systemctl status noctuary-agent
